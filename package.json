@@ -1,8 +1,8 @@
 {
   "$schema": "https://www.schemastore.org/package",
-  "name": "@vuebro/shared",
+  "name": "@skaldapp/shared",
   "version": "1.2.23",
-  "description": "A TypeScript library providing reactive data structures, JSON schema validation, and tree utilities for Vue-based applications in the VueBro ecosystem.",
+  "description": "A TypeScript library providing reactive data structures, JSON schema validation, and tree utilities for Vue-based applications in the skald ecosystem.",
   "keywords": [
     "vue",
     "reactive",
@@ -12,13 +12,13 @@
     "tree-structure",
     "shared-library"
   ],
-  "homepage": "https://github.com/vuebro/shared#readme",
+  "homepage": "https://github.com/skaldapp/shared#readme",
   "bugs": {
-    "url": "https://github.com/vuebro/shared/issues"
+    "url": "https://github.com/skaldapp/shared/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vuebro/shared.git"
+    "url": "git+https://github.com/skaldapp/shared.git"
   },
   "license": "AGPL-3.0-or-later",
   "author": "Jerry Bruwes <jbruwes@gmail.com> (https://jbruwes.github.io)",
@@ -31,9 +31,9 @@
     "build": "tsc && tsc-alias",
     "lint": "eslint ."
   },
-  "prettier": "@vuebro/configs/prettierrc",
+  "prettier": "@skaldapp/configs/prettierrc",
   "dependencies": {
-    "@vuebro/flat-json-tree": "^2.2.15",
+    "@skaldapp/flat-json-tree": "^2.2.17",
     "ajv": "^8.17.1",
     "ajv-keywords": "^5.1.0",
     "consola": "^3.4.2",
@@ -43,7 +43,7 @@
     "vue": "^3.5.26"
   },
   "devDependencies": {
-    "@vuebro/configs": "^1.2.34",
+    "@skaldapp/configs": "^1.2.41",
     "eslint": "^9.39.2"
   }
 }

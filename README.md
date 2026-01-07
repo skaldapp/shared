@@ -1,6 +1,6 @@
-# @vuebro/shared
+# @skaldapp/shared
 
-A TypeScript library providing reactive data structures, JSON schema validation, and tree utilities for Vue-based applications in the VueBro ecosystem.
+A TypeScript library providing reactive data structures, JSON schema validation, and tree utilities for Vue-based applications in the skald ecosystem.
 
 ## Table of Contents
 
@@ -16,7 +16,7 @@ A TypeScript library providing reactive data structures, JSON schema validation,
 
 ## Overview
 
-`@vuebro/shared` is a shared TypeScript library that provides common utilities, reactive data structures, and validation schemas for Vue-based applications, particularly those built with the VueBro ecosystem. It leverages Vue 3's reactivity system combined with JSON Schema validation to create a robust foundation for managing application state.
+`@skaldapp/shared` is a shared TypeScript library that provides common utilities, reactive data structures, and validation schemas for Vue-based applications, particularly those built with the skald ecosystem. It leverages Vue 3's reactivity system combined with JSON Schema validation to create a robust foundation for managing application state.
 
 ## Features
 
@@ -30,7 +30,7 @@ A TypeScript library providing reactive data structures, JSON schema validation,
 ## Installation
 
 ```bash
-npm install @vuebro/shared
+npm install @skaldapp/shared
 ```
 
 ## API Reference
@@ -48,7 +48,7 @@ npm install @vuebro/shared
 ### Basic Usage
 
 ```typescript
-import { sharedStore, fetching } from '@vuebro/shared';
+import { sharedStore, fetching } from '@skaldapp/shared';
 
 // Access reactive data structures
 const { feed, fonts, importmap, tree, credentials, log } = sharedStore;
@@ -60,7 +60,7 @@ const content = await fetching('https://example.com/data.json');
 ### Working with Tree Data
 
 ```typescript
-import { sharedStore } from '@vuebro/shared';
+import { sharedStore } from '@skaldapp/shared';
 
 // Add a new node to the tree
 const newPage = {
@@ -89,7 +89,7 @@ Each page in the tree automatically gets enhanced with computed properties:
 - `to`: Full URL path
 
 ```typescript
-import { sharedStore } from '@vuebro/shared';
+import { sharedStore } from '@skaldapp/shared';
 
 // Access computed properties on a page
 const page = sharedStore.tree[0];
@@ -150,7 +150,7 @@ npm run lint   # Lints the codebase with ESLint
 - `vue`: Vue 3 framework for reactivity
 - `ajv`: JSON schema validator
 - `json-schema-to-ts`: Type generation from JSON schemas
-- `@vuebro/flat-json-tree`: Tree data structure utilities
+- `@skaldapp/flat-json-tree`: Tree data structure utilities
 - `ofetch`: HTTP client
 - `uuid-random`: UUID generation
 

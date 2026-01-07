@@ -2,7 +2,7 @@ import type { AnyValidateFunction } from "ajv/dist/core";
 import type { FromSchema } from "json-schema-to-ts";
 import type { ComputedRef } from "vue";
 
-import useFlatJsonTree from "@vuebro/flat-json-tree";
+import useFlatJsonTree from "@skaldapp/flat-json-tree";
 import AJV from "ajv";
 import dynamicDefaults from "ajv-keywords/dist/definitions/dynamicDefaults.js";
 import { consola } from "consola/browser";
