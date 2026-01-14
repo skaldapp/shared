@@ -8,15 +8,13 @@ import dynamicDefaults from "ajv-keywords/dist/definitions/dynamicDefaults.js";
 import { consola } from "consola/browser";
 import { ofetch } from "ofetch";
 import { generateSlug } from "random-word-slugs";
-import { reactive, ref, toRef, toRefs, watch } from "vue";
+import { reactive, ref, toRef, watch } from "vue";
 
-import Credentials from "@/schemas/credentials";
-import Log from "@/schemas/log";
+import Credential from "@/schemas/credential";
 import Nodes from "@/schemas/nodes";
 import Page from "@/schemas/page";
 
-export type TCredentials = FromSchema<typeof Credentials>;
-export type TLog = FromSchema<typeof Log>;
+export type TCredential = FromSchema<typeof Credential>;
 export type TPage = FromSchema<typeof Page> & {
   $children: TPage[];
   $index: number;
@@ -37,7 +35,7 @@ export type TPage = FromSchema<typeof Page> & {
 
 dynamicDefaults.DEFAULTS["uuid"] = () => generateSlug;
 
-const schemas = [Credentials, Nodes, Page, Log],
+const schemas = [Nodes, Page],
   ajv = new AJV({
     code: { esm: true },
     coerceTypes: true,
@@ -46,12 +44,6 @@ const schemas = [Credentials, Nodes, Page, Log],
     schemas,
     useDefaults: true,
   }),
-  data = toRefs(
-    reactive({
-      credentials: {} as TCredentials,
-      log: {} as TLog,
-    }),
-  ),
   immediate = true,
   nodes = "nodes",
   properties = {
@@ -111,18 +103,12 @@ export const fetching = async (input: string) => {
     }
   },
   sharedStore = reactive({
-    ...data,
     tree,
     ...(useFlatJsonTree(tree) as ReturnType<typeof useFlatJsonTree> & {
       kvNodes: ComputedRef<Record<string, TPage>>;
       nodes: ComputedRef<TPage[]>;
     }),
   });
-
-Object.keys(data).forEach((key) => {
-  if (validate[key])
-    watch(data[key as keyof object], validate[key], { immediate });
-});
 
 watch(
   toRef(sharedStore, nodes),
