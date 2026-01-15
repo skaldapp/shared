@@ -45,7 +45,6 @@ const schemas = [Nodes, Page],
     useDefaults: true,
   }),
   immediate = true,
-  nodes = "nodes",
   properties = {
     $children: {
       get(this: TPage) {
@@ -93,7 +92,8 @@ const schemas = [Nodes, Page],
   },
   tree = ref([] as TPage[]),
   validate: Record<string, AnyValidateFunction | undefined> =
-    Object.fromEntries(schemas.map(({ $id }) => [$id, ajv.getSchema($id)]));
+    Object.fromEntries(schemas.map(({ $id }) => [$id, ajv.getSchema($id)])),
+  { kvNodes, nodes, ...flatJsonTree } = useFlatJsonTree(tree);
 
 export const fetching = async (input: string) => {
     try {
@@ -104,16 +104,15 @@ export const fetching = async (input: string) => {
   },
   sharedStore = reactive({
     tree,
-    ...(useFlatJsonTree(tree) as ReturnType<typeof useFlatJsonTree> & {
-      kvNodes: ComputedRef<Record<string, TPage>>;
-      nodes: ComputedRef<TPage[]>;
-    }),
+    ...flatJsonTree,
+    kvNodes: kvNodes as ComputedRef<Record<string, TPage>>,
+    nodes: nodes as ComputedRef<TPage[]>,
   });
 
 watch(
-  toRef(sharedStore, nodes),
+  toRef(sharedStore, "nodes"),
   async (value) => {
-    if (!(await validate[nodes]?.(value))) tree.value = [{}] as TPage[];
+    if (!(await validate["nodes"]?.(value))) tree.value = [{}] as TPage[];
     else
       value.forEach((element) => {
         if (Object.keys(properties).some((key) => !(key in element)))
