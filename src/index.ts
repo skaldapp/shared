@@ -5,8 +5,6 @@ import type { ComputedRef } from "vue";
 import useFlatJsonTree from "@skaldapp/flat-json-tree";
 import AJV from "ajv";
 import dynamicDefaults from "ajv-keywords/dist/definitions/dynamicDefaults.js";
-import { consola } from "consola/browser";
-import { ofetch } from "ofetch";
 import { generateSlug } from "random-word-slugs";
 import { reactive, ref, toRef, watch } from "vue";
 
@@ -95,19 +93,12 @@ const schemas = [Nodes, Page],
     Object.fromEntries(schemas.map(({ $id }) => [$id, ajv.getSchema($id)])),
   { kvNodes, nodes, ...flatJsonTree } = useFlatJsonTree(tree);
 
-export const fetching = async (input: string) => {
-    try {
-      return await ofetch(input);
-    } catch (error) {
-      consola.error(error);
-    }
-  },
-  sharedStore = reactive({
-    tree,
-    ...flatJsonTree,
-    kvNodes: kvNodes as ComputedRef<Record<string, TPage>>,
-    nodes: nodes as ComputedRef<TPage[]>,
-  });
+export const sharedStore = reactive({
+  tree,
+  ...flatJsonTree,
+  kvNodes: kvNodes as ComputedRef<Record<string, TPage>>,
+  nodes: nodes as ComputedRef<TPage[]>,
+});
 
 watch(
   toRef(sharedStore, "nodes"),
