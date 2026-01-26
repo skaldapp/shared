@@ -14,6 +14,7 @@ import Page from "@/schemas/page";
 
 export type TCredential = FromSchema<typeof Credential>;
 export type TPage = FromSchema<typeof Page> & {
+  $branch: TPage[];
   $children: TPage[];
   $index: number;
   $next?: TPage;
@@ -44,6 +45,11 @@ const schemas = [Nodes, Page],
   }),
   immediate = true,
   properties = {
+    $branch: {
+      get(this: TPage) {
+        return this.branch.filter(({ frontmatter: { hidden } }) => !hidden);
+      },
+    },
     $children: {
       get(this: TPage) {
         return this.children.filter(
