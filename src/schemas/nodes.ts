@@ -1,7 +1,8 @@
 import type { JSONSchema } from "json-schema-to-ts";
 
-export default {
-  $id: "nodes",
-  items: { $ref: "page" },
-  type: "array",
-} as const satisfies JSONSchema;
+const $id = "nodes",
+  $ref = "page",
+  items = { $ref },
+  type = "array";
+
+export default { $id, items, type } as const satisfies JSONSchema;

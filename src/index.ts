@@ -34,14 +34,20 @@ export type TPage = FromSchema<typeof Page> & {
 
 dynamicDefaults.DEFAULTS["uuid"] = () => generateSlug;
 
-const schemas = [Nodes, Page],
+const esm = true,
+  code = { esm },
+  coerceTypes = true,
+  keywords = [dynamicDefaults()],
+  removeAdditional = true,
+  schemas = [Nodes, Page],
+  useDefaults = true,
   ajv = new AJV({
-    code: { esm: true },
-    coerceTypes: true,
-    keywords: [dynamicDefaults()],
-    removeAdditional: true,
+    code,
+    coerceTypes,
+    keywords,
+    removeAdditional,
     schemas,
-    useDefaults: true,
+    useDefaults,
   }),
   immediate = true,
   properties = {
