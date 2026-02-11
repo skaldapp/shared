@@ -6,7 +6,7 @@ import useFlatJsonTree from "@skaldapp/flat-json-tree";
 import AJV from "ajv";
 import dynamicDefaults from "ajv-keywords/dist/definitions/dynamicDefaults.js";
 import { generateSlug } from "random-word-slugs";
-import { reactive, ref, toRef, watch } from "vue";
+import { computed, reactive, ref, toRef, watch } from "vue";
 
 import Credential from "@/schemas/credential";
 import Nodes from "@/schemas/nodes";
@@ -18,6 +18,7 @@ export type TPage = FromSchema<typeof Page> & {
   $children: TPage[];
   $index: number;
   $next?: TPage;
+  $parent?: TPage;
   $prev?: TPage;
   $siblings: TPage[];
   branch: TPage[];
@@ -73,6 +74,11 @@ const esm = true,
         return this.$siblings[this.$index + 1];
       },
     },
+    $parent: {
+      get(this: TPage) {
+        return this.$branch[this.$branch.length - 2];
+      },
+    },
     $prev: {
       get(this: TPage) {
         return this.$siblings[this.$index - 1];
@@ -105,9 +111,16 @@ const esm = true,
     Object.fromEntries(schemas.map(({ $id }) => [$id, ajv.getSchema($id)])),
   { kvNodes, nodes, ...flatJsonTree } = useFlatJsonTree(tree);
 
+const $nodes = computed(() =>
+  (nodes as ComputedRef<TPage[]>).value.filter(
+    ({ frontmatter: { hidden } }) => !hidden,
+  ),
+);
+
 export const sharedStore = reactive({
   tree,
   ...flatJsonTree,
+  $nodes,
   kvNodes: kvNodes as ComputedRef<Record<string, TPage>>,
   nodes: nodes as ComputedRef<TPage[]>,
 });
