@@ -51,6 +51,9 @@ const esm = true,
     useDefaults,
   }),
   immediate = true,
+  isRedirect = ({ id, parent, siblings }: TPage) =>
+    parent?.frontmatter["template"] &&
+    siblings.find(({ frontmatter: { hidden } }) => !hidden)?.id === id,
   properties = {
     $branch: {
       get(this: TPage) {
@@ -112,8 +115,8 @@ const esm = true,
   { kvNodes, nodes, ...flatJsonTree } = useFlatJsonTree(tree);
 
 const $nodes = computed(() =>
-  (nodes as ComputedRef<TPage[]>).value.filter(
-    ({ frontmatter: { hidden } }) => !hidden,
+  (nodes.value as TPage[]).filter(
+    (node) => !node.frontmatter["hidden"] && !isRedirect(node),
   ),
 );
 
