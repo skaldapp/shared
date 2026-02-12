@@ -51,9 +51,6 @@ const esm = true,
     useDefaults,
   }),
   immediate = true,
-  isRedirect = ({ id, parent, siblings }: TPage) =>
-    parent?.frontmatter["template"] &&
-    siblings.find(({ frontmatter: { hidden } }) => !hidden)?.id === id,
   properties = {
     $branch: {
       get(this: TPage) {
@@ -116,10 +113,7 @@ const esm = true,
 
 const $nodes = computed(() =>
   (nodes.value as TPage[]).filter(
-    (node) =>
-      node.path !== undefined &&
-      !node.frontmatter["hidden"] &&
-      !isRedirect(node),
+    ({ frontmatter: { hidden }, path }) => path !== undefined && !hidden,
   ),
 );
 
