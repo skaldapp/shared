@@ -116,7 +116,10 @@ const esm = true,
 
 const $nodes = computed(() =>
   (nodes.value as TPage[]).filter(
-    (node) => !node.frontmatter["hidden"] && !isRedirect(node),
+    (node) =>
+      node.path !== undefined &&
+      !node.frontmatter["hidden"] &&
+      !isRedirect(node),
   ),
 );
 
