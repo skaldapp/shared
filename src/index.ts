@@ -51,6 +51,13 @@ const esm = true,
     useDefaults,
   }),
   immediate = true,
+  isRedirect = ({ branch, id, siblings }: TPage) =>
+    branch
+      .slice(0, -1)
+      .reverse()
+      .find(({ frontmatter: { hidden } }) => !hidden)?.frontmatter[
+      "template"
+    ] && siblings.find(({ frontmatter: { hidden } }) => !hidden)?.id === id,
   properties = {
     $branch: {
       get(this: TPage) {
@@ -113,7 +120,10 @@ const esm = true,
 
 const $nodes = computed(() =>
   (nodes.value as TPage[]).filter(
-    ({ frontmatter: { hidden }, path }) => path !== undefined && !hidden,
+    (node) =>
+      node.path !== undefined &&
+      !node.frontmatter["hidden"] &&
+      !isRedirect(node),
   ),
 );
 
@@ -121,6 +131,7 @@ export const sharedStore = reactive({
   tree,
   ...flatJsonTree,
   $nodes,
+  isRedirect,
   kvNodes: kvNodes as ComputedRef<Record<string, TPage>>,
   nodes: nodes as ComputedRef<TPage[]>,
 });
