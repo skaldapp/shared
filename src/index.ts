@@ -35,20 +35,20 @@ export type TPage = FromSchema<typeof Page> & {
 
 dynamicDefaults.DEFAULTS["uuid"] = () => generateSlug;
 
-const removeHiddens = (pages: TPage[]) =>
-    pages.filter(
-      ({ frontmatter: { hidden }, path }) => path !== undefined && !hidden,
-    ),
-  removeRedirects = (pages: TPage[]) =>
-    pages.filter(
-      ({ branch, id, siblings }) =>
+const removeHiddens = (pages: TPage[], redirects?: boolean) =>
+  pages.filter(
+    ({ branch, frontmatter: { hidden }, id, path, siblings }) =>
+      path !== undefined &&
+      !hidden &&
+      (!redirects ||
         !branch
           .slice(0, -1)
           .reverse()
           .find(({ frontmatter: { hidden } }) => !hidden)?.frontmatter[
           "template"
-        ] || siblings.find(({ frontmatter: { hidden } }) => !hidden)?.id !== id,
-    );
+        ] ||
+        siblings.find(({ frontmatter: { hidden } }) => !hidden)?.id !== id),
+  );
 
 const esm = true,
   code = { esm },
@@ -69,12 +69,12 @@ const esm = true,
   properties = {
     $branch: {
       get(this: TPage) {
-        return removeRedirects(removeHiddens(this.branch));
+        return removeHiddens(this.branch, true);
       },
     },
     $children: {
       get(this: TPage) {
-        return removeRedirects(removeHiddens(this.children));
+        return removeHiddens(this.children, true);
       },
     },
     $index: {
@@ -99,7 +99,7 @@ const esm = true,
     },
     $siblings: {
       get(this: TPage) {
-        return removeRedirects(removeHiddens(this.siblings));
+        return removeHiddens(this.siblings, true);
       },
     },
     path: {
@@ -130,7 +130,6 @@ export const sharedStore = reactive({
   kvNodes: kvNodes as ComputedRef<Record<string, TPage>>,
   nodes: nodes as ComputedRef<TPage[]>,
   removeHiddens,
-  removeRedirects,
 });
 
 watch(
