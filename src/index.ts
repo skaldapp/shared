@@ -6,7 +6,7 @@ import useFlatJsonTree from "@skaldapp/flat-json-tree";
 import AJV from "ajv";
 import dynamicDefaults from "ajv-keywords/dist/definitions/dynamicDefaults.js";
 import { generateSlug } from "random-word-slugs";
-import { computed, reactive, ref, toRef, watch } from "vue";
+import { reactive, ref, toRef, watch } from "vue";
 
 import Credential from "@/schemas/credential";
 import Nodes from "@/schemas/nodes";
@@ -35,6 +35,21 @@ export type TPage = FromSchema<typeof Page> & {
 
 dynamicDefaults.DEFAULTS["uuid"] = () => generateSlug;
 
+const removeHiddens = (pages: TPage[]) =>
+    pages.filter(
+      ({ frontmatter: { hidden }, path }) => path !== undefined && !hidden,
+    ),
+  removeRedirects = (pages: TPage[]) =>
+    pages.filter(
+      ({ branch, id, siblings }) =>
+        !branch
+          .slice(0, -1)
+          .reverse()
+          .find(({ frontmatter: { hidden } }) => !hidden)?.frontmatter[
+          "template"
+        ] || siblings.find(({ frontmatter: { hidden } }) => !hidden)?.id !== id,
+    );
+
 const esm = true,
   code = { esm },
   coerceTypes = true,
@@ -51,24 +66,15 @@ const esm = true,
     useDefaults,
   }),
   immediate = true,
-  isRedirect = ({ branch, id, siblings }: TPage) =>
-    branch
-      .slice(0, -1)
-      .reverse()
-      .find(({ frontmatter: { hidden } }) => !hidden)?.frontmatter[
-      "template"
-    ] && siblings.find(({ frontmatter: { hidden } }) => !hidden)?.id === id,
   properties = {
     $branch: {
       get(this: TPage) {
-        return this.branch.filter(({ frontmatter: { hidden } }) => !hidden);
+        return removeRedirects(removeHiddens(this.branch));
       },
     },
     $children: {
       get(this: TPage) {
-        return this.children.filter(
-          ({ frontmatter: { hidden } }: TPage) => !hidden,
-        );
+        return removeRedirects(removeHiddens(this.children));
       },
     },
     $index: {
@@ -93,7 +99,7 @@ const esm = true,
     },
     $siblings: {
       get(this: TPage) {
-        return this.siblings.filter(({ frontmatter: { hidden } }) => !hidden);
+        return removeRedirects(removeHiddens(this.siblings));
       },
     },
     path: {
@@ -118,19 +124,13 @@ const esm = true,
     Object.fromEntries(schemas.map(({ $id }) => [$id, ajv.getSchema($id)])),
   { kvNodes, nodes, ...flatJsonTree } = useFlatJsonTree(tree);
 
-const $nodes = computed(() =>
-  (nodes.value as TPage[]).filter(
-    (node) => node.path !== undefined && !node.frontmatter["hidden"],
-  ),
-);
-
 export const sharedStore = reactive({
   tree,
   ...flatJsonTree,
-  $nodes,
-  isRedirect,
   kvNodes: kvNodes as ComputedRef<Record<string, TPage>>,
   nodes: nodes as ComputedRef<TPage[]>,
+  removeHiddens,
+  removeRedirects,
 });
 
 watch(
