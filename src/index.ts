@@ -6,7 +6,7 @@ import useFlatJsonTree from "@skaldapp/flat-json-tree";
 import AJV from "ajv";
 import dynamicDefaults from "ajv-keywords/dist/definitions/dynamicDefaults.js";
 import { generateSlug } from "random-word-slugs";
-import { reactive, ref, toRef, watch } from "vue";
+import { computed, reactive, ref, toRef, watch } from "vue";
 
 import Credential from "@/schemas/credential";
 import Nodes from "@/schemas/nodes";
@@ -35,19 +35,12 @@ export type TPage = FromSchema<typeof Page> & {
 
 dynamicDefaults.DEFAULTS["uuid"] = () => generateSlug;
 
-const isRedirect = ({ branch, id, siblings }: TPage) =>
-    branch
-      .slice(0, -1)
-      .reverse()
-      .find(({ frontmatter: { hidden } }) => !hidden)?.frontmatter[
-      "template"
-    ] && siblings.find(({ frontmatter: { hidden } }) => !hidden)?.id === id,
+const isRedirect = ({ $parent, $prev }: TPage) =>
+    $parent?.frontmatter["template"] && !$prev,
   removeHiddens = (pages: TPage[]) =>
     pages.filter(
       ({ frontmatter: { hidden }, path }) => path !== undefined && !hidden,
-    ),
-  removeRedirects = (pages: TPage[]) =>
-    pages.filter((page) => !isRedirect(page));
+    );
 
 const esm = true,
   code = { esm },
@@ -123,13 +116,15 @@ const esm = true,
     Object.fromEntries(schemas.map(({ $id }) => [$id, ajv.getSchema($id)])),
   { kvNodes, nodes, ...flatJsonTree } = useFlatJsonTree(tree);
 
+const $nodes = computed(() => removeHiddens(nodes.value as TPage[]));
+
 export const sharedStore = reactive({
   tree,
   ...flatJsonTree,
+  $nodes,
+  isRedirect,
   kvNodes: kvNodes as ComputedRef<Record<string, TPage>>,
   nodes: nodes as ComputedRef<TPage[]>,
-  removeHiddens,
-  removeRedirects,
 });
 
 watch(
