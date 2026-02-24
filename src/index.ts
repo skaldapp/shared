@@ -35,12 +35,10 @@ export type TPage = FromSchema<typeof Page> & {
 
 dynamicDefaults.DEFAULTS["uuid"] = () => generateSlug;
 
-const isRedirect = ({ $parent, $prev }: TPage) =>
-    $parent?.frontmatter["template"] && !$prev,
-  removeHiddens = (pages: TPage[]) =>
-    pages.filter(
-      ({ frontmatter: { hidden }, path }) => path !== undefined && !hidden,
-    );
+const removeHiddens = (pages: TPage[]) =>
+  pages.filter(
+    ({ frontmatter: { hidden }, path }) => path !== undefined && !hidden,
+  );
 
 const esm = true,
   code = { esm },
@@ -58,6 +56,9 @@ const esm = true,
     useDefaults,
   }),
   immediate = true,
+  isRedirect = ({ $parent, $prev }: TPage) =>
+    $parent?.frontmatter["template"] && !$prev,
+  LEAD_TRAIL_SLASH_RE = /^\/?|\/?$/g,
   properties = {
     $branch: {
       get(this: TPage) {
@@ -107,7 +108,9 @@ const esm = true,
     },
     to: {
       get(this: TPage) {
-        return this.path?.replace(/^\/?/, "/").replace(/\/?$/, "/");
+        const { path } =
+          [...this.$branch].reverse().find((node) => !isRedirect(node)) ?? this;
+        return path?.replace(LEAD_TRAIL_SLASH_RE, "/");
       },
     },
   },
@@ -124,6 +127,7 @@ export const sharedStore = reactive({
   $nodes,
   isRedirect,
   kvNodes: kvNodes as ComputedRef<Record<string, TPage>>,
+  LEAD_TRAIL_SLASH_RE,
   nodes: nodes as ComputedRef<TPage[]>,
 });
 

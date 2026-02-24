@@ -22,8 +22,12 @@
   },
   "license": "AGPL-3.0-or-later",
   "author": "Jerry Bruwes <jbruwes@gmail.com> (https://jbruwes.github.io)",
+  "sideEffects": false,
   "type": "module",
-  "main": "dist/index.js",
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "main": "./dist/index.js",
   "files": [
     "dist"
   ],
@@ -33,16 +37,16 @@
   },
   "prettier": "@skaldapp/configs/prettierrc",
   "dependencies": {
-    "@skaldapp/flat-json-tree": "^2.2.32",
+    "@skaldapp/flat-json-tree": "^2.2.34",
     "ajv": "^8.18.0",
     "ajv-keywords": "^5.1.0",
     "json-schema-to-ts": "^3.1.1",
     "random-word-slugs": "^0.1.7",
-    "vue": "^3.5.28"
+    "vue": "^3.5.29"
   },
   "devDependencies": {
-    "@skaldapp/configs": "^1.2.59",
+    "@skaldapp/configs": "^1.2.63",
     "@types/node": "^25.3.0",
-    "eslint": "^9.39.2"
+    "eslint": "^9.39.3"
   }
 }
