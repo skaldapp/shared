@@ -35,10 +35,8 @@ export type TPage = FromSchema<typeof Page> & {
 
 dynamicDefaults.DEFAULTS["uuid"] = () => generateSlug;
 
-const removeHiddens = (pages: TPage[]) =>
-  pages.filter(
-    ({ frontmatter: { hidden }, path }) => path !== undefined && !hidden,
-  );
+const isVisible = ({ frontmatter: { hidden }, path }: TPage) =>
+  path !== undefined && !hidden;
 
 const esm = true,
   code = { esm },
@@ -56,18 +54,27 @@ const esm = true,
     useDefaults,
   }),
   immediate = true,
-  isRedirect = ({ $parent, $prev }: TPage) =>
-    $parent?.frontmatter["template"] && !$prev,
+  isRedirect = (branch: TPage[]) =>
+    ((reversedBranch) =>
+      ((i) =>
+        reversedBranch[i]?.frontmatter["template"] &&
+        !reversedBranch
+          .slice(0, i)
+          .some(({ index, siblings }) =>
+            siblings.slice(0, index).some(isVisible),
+          ))(
+        reversedBranch.findIndex((value, index) => index && isVisible(value)),
+      ))([...branch].reverse()),
   LEAD_TRAIL_SLASH_RE = /^\/?|\/?$/g,
   properties = {
     $branch: {
       get(this: TPage) {
-        return removeHiddens(this.branch);
+        return this.branch.filter(isVisible);
       },
     },
     $children: {
       get(this: TPage) {
-        return removeHiddens(this.children);
+        return this.children.filter(isVisible);
       },
     },
     $index: {
@@ -92,7 +99,7 @@ const esm = true,
     },
     $siblings: {
       get(this: TPage) {
-        return removeHiddens(this.siblings);
+        return this.siblings.filter(isVisible);
       },
     },
     path: {
@@ -109,7 +116,9 @@ const esm = true,
     to: {
       get(this: TPage) {
         const { path } =
-          [...this.$branch].reverse().find((node) => !isRedirect(node)) ?? this;
+          [...this.$branch]
+            .reverse()
+            .find(({ branch }) => !isRedirect(branch)) ?? this;
         return path?.replace(LEAD_TRAIL_SLASH_RE, "/");
       },
     },
@@ -119,7 +128,7 @@ const esm = true,
     Object.fromEntries(schemas.map(({ $id }) => [$id, ajv.getSchema($id)])),
   { kvNodes, nodes, ...flatJsonTree } = useFlatJsonTree(tree);
 
-const $nodes = computed(() => removeHiddens(nodes.value as TPage[]));
+const $nodes = computed(() => (nodes.value as TPage[]).filter(isVisible));
 
 export const sharedStore = reactive({
   tree,
