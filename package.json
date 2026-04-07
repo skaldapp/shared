@@ -32,12 +32,12 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc && tsc-alias",
+    "build": "tsc -p tsconfig.build.json && tsc-alias",
     "lint": "eslint ."
   },
   "prettier": "@skaldapp/configs/prettierrc",
   "dependencies": {
-    "@skaldapp/flat-json-tree": "^2.2.55",
+    "@skaldapp/flat-json-tree": "^2.2.56",
     "ajv": "^8.18.0",
     "ajv-keywords": "^5.1.0",
     "json-schema-to-ts": "^3.1.1",
@@ -45,7 +45,7 @@
     "vue": "^3.5.32"
   },
   "devDependencies": {
-    "@skaldapp/configs": "^1.2.84",
+    "@skaldapp/configs": "^1.2.91",
     "@types/node": "^25.5.2",
     "eslint": "^10.2.0"
   }
