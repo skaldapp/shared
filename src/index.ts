@@ -10,9 +10,11 @@ import { computed, reactive, ref, toRef, watch } from "vue";
 
 import Credential from "@/schemas/credential";
 import Nodes from "@/schemas/nodes";
+import OpenAI from "@/schemas/openai";
 import Page from "@/schemas/page";
 
 export type TCredential = FromSchema<typeof Credential>;
+export type TOpenAI = FromSchema<typeof OpenAI>;
 export type TPage = FromSchema<typeof Page> & {
   $branch: TPage[];
   $children: TPage[];
