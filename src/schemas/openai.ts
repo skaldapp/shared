@@ -12,7 +12,7 @@ export default {
     apiKey: { default: null, nullable, type },
     baseURL: { default: null, nullable, type },
     endpoint: { default: null, nullable, type },
-    fim: { default: null, nullable, type: "boolean" },
+    model: { default: null, nullable, type },
   },
   type: "object",
 } as const satisfies JSONSchema;
