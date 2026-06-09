@@ -8,12 +8,13 @@ import dynamicDefaults from "ajv-keywords/dist/definitions/dynamicDefaults.js";
 import { generateSlug } from "random-word-slugs";
 import { computed, reactive, ref, toRef, watch } from "vue";
 
-import Credential from "@/schemas/credential";
+import Credentials from "@/schemas/credentials";
 import Nodes from "@/schemas/nodes";
 import OpenAI from "@/schemas/openai";
 import Page from "@/schemas/page";
+import Settings from "@/schemas/settings";
 
-export type TCredential = FromSchema<typeof Credential>;
+export type TCredentials = FromSchema<typeof Credentials>;
 export type TOpenAI = FromSchema<typeof OpenAI>;
 export type TPage = FromSchema<typeof Page> & {
   $branch: TPage[];
@@ -34,6 +35,7 @@ export type TPage = FromSchema<typeof Page> & {
   siblings: TPage[];
   to?: string;
 };
+export type TSettings = FromSchema<typeof Settings>;
 
 dynamicDefaults.DEFAULTS["uuid"] = () => generateSlug;
 
