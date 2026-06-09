@@ -1,6 +1,6 @@
 import type { JSONSchema } from "json-schema-to-ts";
 
-const $id = "credential",
+const $id = "credentials",
   additionalProperties = false,
   nullable = true,
   type = "string";
