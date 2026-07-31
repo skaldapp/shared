@@ -37,7 +37,7 @@
   },
   "prettier": "@skaldapp/configs/prettierrc",
   "dependencies": {
-    "@skaldapp/flat-json-tree": "^2.3.8",
+    "@skaldapp/flat-json-tree": "^2.3.9",
     "ajv": "^8.20.0",
     "ajv-keywords": "^5.1.0",
     "json-schema-to-ts": "^3.1.1",
@@ -45,7 +45,7 @@
     "vue": "^3.5.40"
   },
   "devDependencies": {
-    "@skaldapp/configs": "^1.4.12",
+    "@skaldapp/configs": "^1.4.13",
     "@types/node": "^26.1.2",
     "eslint": "^10.8.0"
   }
